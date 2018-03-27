@@ -1,12 +1,12 @@
 Hangouts History Parser
 =======================
 
-A tool to parse Google Hangouts history into IRC style text logs. This will allow for simpler analysis and easier data visualizations.
+A tool to parse Google Hangouts history into IRC style text logs. This will allow for simpler analysis and easier visualizations.
 
 Background
 ----------
 
-Your Hangouts data can be downloaded from [Google Takeout](https://takeout.google.com/settings/takeout). ALl historical conversations are in JSON format with a lot of nested miscellaneous/irrelevant data. The purpose of this tool is to find separate the different conversations and output them in a human-readable format that can be easily archived or analyzed.
+Your Hangouts data can be downloaded from [Google Takeout](https://takeout.google.com/settings/takeout). All historical conversations are in JSON format with lots of nested miscellaneous/irrelevant data. The purpose of this tool is to separate different conversations and output them in a human-readable format that can be easily archived or analyzed.
 
 Hangouts.json format
 --------------------
