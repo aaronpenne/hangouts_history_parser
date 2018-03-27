@@ -1,60 +1,71 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Tryint to parse Hangouts messages into a reasonable text log
 
-Hangouts JSON fields for conversation metadata:
+Author: Aaron Penne
+Created: 2018-03-27
 
-Hangouts JSON fields for each message:
-   {'advances_sort_timestamp': True,
-    'chat_message': 
-        {'message_content': 
-            {'segment': 
-                [{'text': "Hello, this is the message text", 
-                  'type': 'TEXT'}]
-            }
-        },
-    'conversation_id': {'id': 'UgzeAzn7fABv6JXXXXXXXXX'},
-    'delivery_medium': {'medium_type': 'BABEL_MEDIUM'},
-    'event_id': '80-HmPoMsc980-XXXXXX',
-    'event_otr': 'ON_THE_RECORD',
-    'event_type': 'REGULAR_CHAT_MESSAGE',
-    'event_version': '14334690XXXXXXXX',
-    'self_event_state': 
-        {'client_generated_id': '31149098182XXXXXXXX',
-         'notification_level': 'RING',
-         'user_id': 
-             {'chat_id': '117191193XXXXXXXXX',
-              'gaia_id': '117191193XXXXXXXXX'
-             }
-        },
-    'sender_id': 
-        {'chat_id': '117191193XXXXXXXXX',
-         'gaia_id': '117191193XXXXXXXXX'
-        },
-    'timestamp': '1433469000492727'
-   }
-
-IRC format:
-    [MM.DD.YYYY HH:MM:SS] <Name> message text appears 
-
+Developed with:
+    Python 3.6
+    Windows 10
 """
 
 import os
 import json
-import pandas as pd
 from datetime import datetime
 
 input_file = os.path.join('data_private', 'Hangouts.json')
-
+output_dir = os.path.relpath('output')
+if not os.path.isdir(output_dir):
+    os.mkdir(output_dir)
+output_file = os.path.join(output_dir, 'Hangouts')
+    
 # With json module
-with open(input_file, 'r') as f:
+with open(input_file, 'r', encoding="utf8") as f:
     data = json.load(f)
 
-# With pandas
-# f = pd.read_json(input_file)
-# a = dict(df.iloc[3][0])
-# print(json.dumps(a, sort_keys=True, indent=2))
+num_conversations = len(data['conversations'])
 
-# Convert unix time to ISO-ish
-print(datetime.fromtimestamp(1433465143911140/1000000).strftime('[%m/%d/%Y %H:%M:%S]'))
+participant = {}
+for i in range(num_conversations):
+    with open(os.path.join(output_dir, 'Hangouts_{:03}.txt'.format(i)), 'a+') as f:
+    
+        # Extract info from metadata
+        conversation = data['conversations'][i]['conversation']['conversation']
+        num_participants = len(conversation['participant_data'])
+        for j in range(num_participants):
+            participant[j] = {}
+            # Get participant name
+            try:
+                participant[j]['name'] = conversation['participant_data'][j]['fallback_name']
+            except:
+                participant[j]['name'] = 'Anonymous'
+            
+            # Get participant ID
+            try:
+                participant[j]['id'] = conversation['participant_data'][j]['id']['chat_id']
+            except:
+                participant[j]['id'] = 'Anon_ID'
+                
+            # Extract info from messages
+            events = data['conversations'][i]['events']
+            num_events = len(events)
+            for j in range(num_events):
+                try:
+                    # Just grab text for now # FIXME add more?
+                    if events[j]['chat_message']['message_content']['segment'][0]['type'] == 'TEXT':
+                   
+                        timestamp = int(events[j]['timestamp'])/1000000
+                        timestamp = datetime.fromtimestamp(timestamp).strftime('%m/%d/%Y %H:%M:%S')
+                        name = events[j]['sender_id']['chat_id']
+                        
+                        # FIXME Add support for more than one line (#include stdio.h, etc.)
+                        message = events[j]['chat_message']['message_content']['segment'][0]['text'] 
+                except:
+                    continue
+                
+                try:
+                    f.write('[{}] <{}> {}\n'.format(timestamp, name, message))
+                except:
+                    continue
+
