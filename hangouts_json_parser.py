@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Tryint to parse Hangouts messages into a reasonable text log
+Trying to parse Hangouts messages into a reasonable text log
 
 Author: Aaron Penne
 Created: 2018-03-27
