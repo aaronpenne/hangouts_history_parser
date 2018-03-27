@@ -46,8 +46,15 @@ import pandas as pd
 from datetime import datetime
 
 input_file = os.path.join('data_private', 'Hangouts.json')
-df = pd.read_json(input_file)
-a = dict(df.iloc[3][0])
-print(json.dumps(a, sort_keys=True, indent=2))
 
+# With json module
+with open(input_file, 'r') as f:
+    data = json.load(f)
+
+# With pandas
+# f = pd.read_json(input_file)
+# a = dict(df.iloc[3][0])
+# print(json.dumps(a, sort_keys=True, indent=2))
+
+# Convert unix time to ISO-ish
 print(datetime.fromtimestamp(1433465143911140/1000000).strftime('[%m/%d/%Y %H:%M:%S]'))
