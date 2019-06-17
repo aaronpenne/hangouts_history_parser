@@ -69,7 +69,7 @@ for i in range(num_conversations):
             for j in range(num_events):
                 try:           
                     timestamp = int(events[j]['timestamp'])/1000000
-                    timestamp = datetime.fromtimestamp(timestamp).strftime('%m/%d/%Y %H:%M:%S')
+                    timestamp = datetime.fromtimestamp(timestamp).strftime('%Y/%m/%d %H:%M:%S')
                     name = participant[events[j]['sender_id']['chat_id']]
                     
                     segment = events[j]['chat_message']['message_content']['segment']
