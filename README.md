@@ -8,6 +8,11 @@ Background
 
 Your Hangouts data can be downloaded from [Google Takeout](https://takeout.google.com/settings/takeout). All historical conversations are in JSON format with lots of nested miscellaneous/irrelevant data. The purpose of this tool is to separate different conversations and output them in a human-readable format that can be easily archived or analyzed.
 
+Method
+------
+Place the Hangouts.json file inside the data_private folder
+Use python3 instead of python for the parser to work
+
 Hangouts.json format
 --------------------
 
